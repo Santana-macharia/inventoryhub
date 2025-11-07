@@ -242,6 +242,7 @@ function showModal(action, userId = null) {
     document.getElementById('modalTitle').textContent = 'Update User';
     document.getElementById('userForm').action = "{% url 'user_update' 999 %}".replace('999', userId);
     populateForm(row);
+    
     document.getElementById('userModal').classList.remove('hidden');
 
   } else if (action === 'view' && row) {

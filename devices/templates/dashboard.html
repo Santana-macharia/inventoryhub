@@ -40,7 +40,7 @@
                         </svg>
                     </button>
                     <div id="accountMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
-                        <a href="{% url 'profile' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">See Profile</a>
+                        <a href="{% url 'profile' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Profile</a>
                         <a href="{% url 'change_password' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Change Password</a>
                         <a href="{% url 'logout' %}" class="block px-4 py-2 text-error hover:bg-gray-200">Logout</a>
                     </div>
@@ -294,15 +294,22 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.getElementById('sidebar');
-            document.getElementById('mobileMenuToggle').addEventListener('click', () => {
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const accountDropdown = document.getElementById('accountDropdown');
+            const accountMenu = document.getElementById('accountMenu');
+
+            // Mobile menu toggle
+            mobileMenuToggle.addEventListener('click', () => {
                 sidebar.classList.toggle('-translate-x-full');
             });
 
-            document.getElementById('accountDropdown').addEventListener('click', (e) => {
-                e.preventDefault();
-                document.getElementById('accountMenu').classList.toggle('hidden');
+            // Account dropdown toggle with stopPropagation
+            accountDropdown.addEventListener('click', (e) => {
+                e.stopPropagation();
+                accountMenu.classList.toggle('hidden');
             });
 
+            // Sidebar dropdown toggles
             ['manageDevicesToggle', 'itOperationsToggle', 'ppmManagementToggle', 'manageUsersToggle'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
@@ -314,16 +321,28 @@
                 }
             });
 
+            // Global click to close all menus
             document.addEventListener('click', (e) => {
-                ['accountMenu', 'manageDevicesDropdown', 'itOperationsDropdown', 'ppmManagementDropdown', 'manageUsersDropdown'].forEach(id => {
-                    const menu = document.getElementById(id);
-                    const btn = document.getElementById(id.replace('Dropdown', 'Toggle')) || document.getElementById('accountDropdown');
-                    if (menu && btn && !btn.contains(e.target) && !menu.contains(e.target)) {
-                        menu.classList.add('hidden');
+                const menus = [
+                    { menuId: 'accountMenu', triggerId: 'accountDropdown' },
+                    { menuId: 'manageDevicesDropdown', triggerId: 'manageDevicesToggle' },
+                    { menuId: 'itOperationsDropdown', triggerId: 'itOperationsToggle' },
+                    { menuId: 'ppmManagementDropdown', triggerId: 'ppmManagementToggle' },
+                    { menuId: 'manageUsersDropdown', triggerId: 'manageUsersToggle' }
+                ];
+
+                menus.forEach(({ menuId, triggerId }) => {
+                    const menu = document.getElementById(menuId);
+                    const trigger = document.getElementById(triggerId);
+                    if (menu && trigger) {
+                        if (!trigger.contains(e.target) && !menu.contains(e.target)) {
+                            menu.classList.add('hidden');
+                        }
                     }
                 });
             });
 
+            // Hide notification badge when clicking notifications link
             document.querySelectorAll('a[href*="notifications"]').forEach(link => {
                 link.addEventListener('click', () => {
                     const badge = document.getElementById('notificationBadge');
