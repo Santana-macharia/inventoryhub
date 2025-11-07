@@ -50,7 +50,19 @@ class Import(models.Model):
     assignee_last_name = models.CharField(max_length=50, blank=True, null=True)
     assignee_email_address = models.EmailField(blank=True, null=True)
     device_condition = models.CharField(max_length=100, blank=True, null=True)
-    status = models.CharField(max_length=50, blank=True, null=True)
+    STATUS_CHOICES = [
+        ('issued', 'Issued'),           # value stored in DB → label in forms
+        ('not_issued', 'Not Issued'),
+        ('returned', 'Returned'),
+    ]
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        blank=True,
+        null=True,
+        help_text="Select the current status of the device."
+    )
     date = models.DateField(auto_now_add=True)
     added_by = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name='imports_added')
     approved_by = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='imports_approved')

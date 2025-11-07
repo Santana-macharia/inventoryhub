@@ -114,6 +114,7 @@
                 <tr class="bg-gray-200 text-gray-700 text-left text-sm font-semibold">
                     <th class="py-3 px-4 border-b">Device Details</th>
                     <th class="py-3 px-4 border-b">Centre</th>
+                    <th class="py-3 px-4 border-b">Department</th>
                     <th class="py-3 px-4 border-b">Assignee</th>
                     <th class="py-3 px-4 border-b">Status & Date</th>
                     <th class="py-3 px-4 border-b">Actions</th>
@@ -129,6 +130,7 @@
                                 <div><strong>Hardware:</strong> {{ item.hardware|default:"N/A" }}</div>
                             </td>
                             <td class="py-3 px-4">{{ item.centre.name|default:"N/A" }}</td>
+                             <td class="py-3 px-4">{{ item.department.name|default:"N/A" }}</td>
                             <td class="py-3 px-4">
                                 {{ item.assignee_first_name|default:"" }} {{ item.assignee_last_name|default:"" }}
                             </td>
