@@ -1,33 +1,46 @@
-from datetime import datetime, timedelta
+# Django core
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.db import transaction
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Q, Count, Avg, F, Sum, Case, When, IntegerField
+from django.db import transaction
+from django.db.models import Q, F, Case, When, IntegerField, Count
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.template.loader import get_template
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth import logout, update_session_auth_hash, authenticate, login
 from django.urls import reverse
 from django.utils import timezone
-from django.contrib.contenttypes.models import ContentType
-import openpyxl
+from datetime import timedelta, datetime
+from io import TextIOWrapper
+
+# Models
+from devices.models import CustomUser, DeviceUserHistory, Import, Centre, Notification, PendingUpdate, Department
+from devices.forms import ClearanceForm
+from ppm.models import PPMTask, PPMPeriod
+
+# Third-party & Standard Library
 import csv
 import logging
-from io import BytesIO, TextIOWrapper
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import mm
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from io import BytesIO
+
+# Excel (openpyxl)
+import openpyxl
+from openpyxl.styles import Font, PatternFill, Alignment
+
+# PDF (ReportLab)
 from reportlab.lib import colors
+from reportlab.lib.pagesizes import landscape, A4
+from reportlab.lib.units import mm
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.enums import TA_LEFT
+from reportlab.lib.enums import TA_LEFT, TA_CENTER
+from reportlab.platypus import (
+    SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer,
+    Frame, PageTemplate
+)
 
-from devices.forms import ClearanceForm
-from devices.models import CustomUser, DeviceUserHistory, Import, Centre, Notification, PendingUpdate, Department
-from ppm.models import PPMTask, PPMPeriod
-from django.contrib.auth.models import Group, Permission
-
-# Set up logging for debugging
+# Logging
 logger = logging.getLogger(__name__)
 
 def handle_uploaded_file(file, user):
@@ -644,24 +657,33 @@ def import_approve_all(request):
         return redirect(redirect_url)
     return redirect('display_unapproved_imports')
 
+def _can_delete(user):
+    """Only IT Manager or Senior IT Officer can delete."""
+    return user.is_it_manager or user.is_senior_it_officer
+
+
 @login_required
-@user_passes_test(lambda u: not u.is_trainer)
+@user_passes_test(_can_delete, login_url='display_approved_imports')
 def import_delete(request, pk):
     import_instance = get_object_or_404(Import, pk=pk)
+
     if request.method == 'POST':
         with transaction.atomic():
             serial_number = import_instance.serial_number
             import_instance.delete()
+
+            # Mark any related notifications as read
             content_type = ContentType.objects.get_for_model(Import)
             Notification.objects.filter(
                 content_type=content_type,
                 object_id=pk,
-                user__is_superuser=True,
-                user__is_trainer=False,
                 is_read=False
             ).update(is_read=True, responded_by=request.user)
+
             messages.success(request, f"Device {serial_number} deleted successfully.")
         return redirect('display_approved_imports')
+
+    # If GET → just redirect (no form shown)
     return redirect('display_approved_imports')
 
 @login_required
@@ -796,25 +818,27 @@ def device_history(request, pk):
         'user_history': user_history_data
     })
 
-
 @login_required
 def export_to_excel(request):
-    scope = request.GET.get('scope', 'page')
+    scope        = request.GET.get('scope', 'page')
     search_query = request.GET.get('search', '')
-    page_number = request.GET.get('page', '1')
+    page_number  = request.GET.get('page', '1')
     items_per_page = request.GET.get('items_per_page', '10')
 
+    # ---- pagination / validation -------------------------------------------------
     try:
         items_per_page = int(items_per_page)
         if items_per_page not in [10, 25, 50, 100, 500]:
             items_per_page = 10
     except ValueError:
         items_per_page = 10
+
     try:
         page_number = int(page_number) if page_number else 1
     except ValueError:
         page_number = 1
 
+    # ---- queryset ---------------------------------------------------------------
     if request.user.is_superuser:
         data = Import.objects.all()
     elif request.user.is_trainer:
@@ -850,20 +874,34 @@ def export_to_excel(request):
         except (PageNotAnInteger, EmptyPage):
             data = paginator.page(1)
 
+    # ---- workbook ---------------------------------------------------------------
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "IT Inventory"
+
+    # ---- headers ----------------------------------------------------------------
     headers = [
-        'Centre Code', 'Department Code', 'Hardware', 'System Model', 'Processor', 'RAM (GB)', 'HDD (GB)',
-        'Serial Number', 'Assignee First Name', 'Assignee Last Name', 'Assignee Email',
-        'Device Condition', 'Status', 'Date', 'Added By', 'Approved By', 'Is Approved', 'Disposal Reason'
+        'Centre', 'Department', 'Hardware', 'System Model',
+        'Processor', 'RAM (GB)', 'HDD (GB)', 'Serial Number',
+        'Assignee First Name', 'Assignee Last Name', 'Assignee Email',
+        'Device Condition', 'Status', 'Date', 'Added By',
+        'Approved By', 'Is Approved', 'Disposal Reason'
     ]
     ws.append(headers)
 
+    # ---- style for the header ---------------------------------------------------
+    header_font = Font(bold=True, color="FFFFFF")
+    header_fill = PatternFill(start_color="366092", end_color="366092", fill_type="solid")
+    for cell in ws[1]:
+        cell.font  = header_font
+        cell.fill  = header_fill
+        cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+
+    # ---- data rows --------------------------------------------------------------
     for item in data:
-        ws.append([
-            item.centre.centre_code if item.centre else 'N/A',
-            item.department.department_code if item.department else 'N/A',
+        row = [
+            item.centre.name if item.centre else 'N/A',
+            item.department.name if item.department else 'N/A',
             item.hardware or 'N/A',
             item.system_model or 'N/A',
             item.processor or 'N/A',
@@ -879,10 +917,33 @@ def export_to_excel(request):
             item.added_by.username if item.added_by else 'N/A',
             item.approved_by.username if item.approved_by else 'N/A',
             'Yes' if item.is_approved else 'No',
-            item.disposal_reason or 'N/A'
-        ])
+            item.disposal_reason or 'N/A',
+        ]
+        ws.append(row)
 
-    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    # ---- wrap text & auto‑adjust column widths ----------------------------------
+    wrap_align = Alignment(wrap_text=True, vertical="top")
+    for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
+        for cell in row:
+            cell.alignment = wrap_align
+
+    # auto‑size columns (a little extra room for wrapped text)
+    for col in ws.columns:
+        max_length = 0
+        column = col[0].column_letter
+        for cell in col:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(str(cell.value))
+            except:
+                pass
+        adjusted_width = min(max_length + 2, 50)   # cap at 50 to avoid huge sheets
+        ws.column_dimensions[column].width = adjusted_width
+
+    # ---- response ---------------------------------------------------------------
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
     filename = f"IT_Inventory_{'All' if scope == 'all' else 'Page'}.xlsx"
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     wb.save(response)
@@ -895,6 +956,7 @@ def export_to_pdf(request):
     page_number = request.GET.get('page', '1')
     items_per_page = request.GET.get('items_per_page', '10')
 
+    # --- Pagination ---
     try:
         items_per_page = int(items_per_page)
         if items_per_page not in [10, 25, 50, 100, 500]:
@@ -906,25 +968,17 @@ def export_to_pdf(request):
     except ValueError:
         page_number = 1
 
+    # --- Queryset ---
     if request.user.is_superuser:
-        data = Import.objects.only(
-            'centre__name', 'centre__centre_code', 'department__name', 'hardware', 'system_model', 'processor',
-            'ram_gb', 'hdd_gb', 'serial_number', 'assignee_first_name', 'assignee_last_name',
-            'assignee_email_address', 'device_condition', 'status', 'date', 'reason_for_update',
-            'disposal_reason'
-        )
+        qs = Import.objects.select_related('centre', 'department', 'added_by', 'approved_by')
     elif request.user.is_trainer:
-        data = Import.objects.filter(centre=request.user.centre).only(
-            'centre__name', 'centre__centre_code', 'department__name', 'hardware', 'system_model', 'processor',
-            'ram_gb', 'hdd_gb', 'serial_number', 'assignee_first_name', 'assignee_last_name',
-            'assignee_email_address', 'device_condition', 'status', 'date', 'reason_for_update',
-            'disposal_reason'
-        )
+        qs = Import.objects.filter(centre=request.user.centre)\
+                           .select_related('centre', 'department', 'added_by', 'approved_by')
     else:
-        data = Import.objects.none()
+        qs = Import.objects.none()
 
     if search_query:
-        query = (
+        qs = qs.filter(
             Q(centre__name__icontains=search_query) |
             Q(centre__centre_code__icontains=search_query) |
             Q(department__name__icontains=search_query) |
@@ -942,97 +996,147 @@ def export_to_pdf(request):
             Q(date__icontains=search_query) |
             Q(reason_for_update__icontains=search_query)
         )
-        data = data.filter(query)
 
     if scope == 'page':
-        paginator = Paginator(data, items_per_page)
+        paginator = Paginator(qs, items_per_page)
         try:
             data = paginator.page(page_number)
         except (PageNotAnInteger, EmptyPage):
             data = paginator.page(1)
     else:
-        data = data.iterator()
+        data = list(qs.iterator())  # force evaluation
 
+    # --- Response ---
     response = HttpResponse(content_type='application/pdf')
     filename = f"IT_Inventory_{'All' if scope == 'all' else 'Page'}.pdf"
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
-    doc = SimpleDocTemplate(response, pagesize=(A4[1], A4[0]), rightMargin=10*mm, leftMargin=10*mm, topMargin=15*mm, bottomMargin=15*mm)
+    # --- Document ---
+    doc = SimpleDocTemplate(
+        response,
+        pagesize=landscape(A4),
+        rightMargin=10*mm, leftMargin=10*mm,
+        topMargin=15*mm, bottomMargin=18*mm
+    )
+
     elements = []
     styles = getSampleStyleSheet()
-    title_style = styles['Heading1']
-    subtitle_style = ParagraphStyle(name='Subtitle', parent=styles['Normal'], fontSize=10, spaceAfter=10)
-    cell_style = ParagraphStyle(name='Cell', fontSize=7, leading=8, alignment=TA_LEFT, wordWrap='CJK')
 
-    if request.user.is_superuser:
-        elements.append(Paragraph('MOHO IT Inventory Report', title_style))
-    elif request.user.is_trainer:
-        elements.append(Paragraph(f'{request.user.centre.name} IT Inventory Report', title_style))
-    elements.append(Paragraph(f'Generated on {datetime.now().strftime("%Y-%m-%d")}', subtitle_style))
+    # --- Custom Styles ---
+    styles.add(ParagraphStyle(
+        name='ReportTitle', fontSize=18, leading=22,
+        textColor=colors.HexColor('#143C50'), alignment=TA_CENTER, spaceAfter=6
+    ))
+    styles.add(ParagraphStyle(
+        name='SubTitle', fontSize=11, leading=13,
+        textColor=colors.HexColor('#143C50'), alignment=TA_CENTER, spaceAfter=10
+    ))
+    styles.add(ParagraphStyle(
+        name='Cell', fontSize=7.5, leading=9,
+        alignment=TA_LEFT, wordWrap='CJK'
+    ))
+
+    # --- Title ---
+    title = 'MOHO IT Inventory Report' if request.user.is_superuser else f'{request.user.centre.name} IT Inventory Report'
+    elements.append(Paragraph(title, styles['ReportTitle']))
+    elements.append(Paragraph(
+        f"Generated on {timezone.now().strftime('%B %d, %Y at %I:%M %p')}",
+        styles['SubTitle']
+    ))
     elements.append(Spacer(1, 6*mm))
 
-    headers = ['Device Details', 'Centre', 'Assignee Info', 'Status & Date']
-    col_widths = [250, 150, 200, 200]
-    table_data = [headers]
+    # --- Table: Your Exact Column Widths ---
+    col_widths = [70, 70, 70, 85, 95, 120, 65, 80, 80]  # mm
+    headers = [
+        'Centre', 'Department', 'Hardware', 'Model',
+        'Specs & serial number', 'Assignee',
+        'Condition', 'Status & Date', 'Disposal Reason'
+    ]
 
-    def safe_str(value):
-        return str(value or 'N/A').encode('utf-8', errors='replace').decode('utf-8')
+    table_data = [headers]
+    cell_style = styles['Cell']
+
+    def safe(v):
+        return str(v or 'N/A')
 
     for item in data:
-        device_details = (
-            f"<b>Serial:</b> {safe_str(item.serial_number)}<br/>"
-            f"<b>Hardware:</b> {safe_str(item.hardware)}<br/>"
-            f"<b>Model:</b> {safe_str(item.system_model)}<br/>"
-            f"<b>Processor:</b> {safe_str(item.processor)}<br/>"
-            f"<b>RAM:</b> {safe_str(item.ram_gb)} GB<br/>"
-            f"<b>HDD:</b> {safe_str(item.hdd_gb)} GB"
+        specs = (
+            f"<b>RAM:</b> {safe(item.ram_gb)} GB<br/>"
+            f"<b>HDD:</b> {safe(item.hdd_gb)} GB<br/>"
+            f"<b>Serial:</b> {safe(item.serial_number)}"
         )
-        centre_info = (
-            f"<b>Centre:</b> {safe_str(item.centre.name if item.centre else 'N/A')}<br/>"
-            f"<b>Dept:</b> {safe_str(item.department.name if item.department else 'N/A')}"
-        )
-        assignee_info = (
-            f"<b>Name:</b> {safe_str(item.assignee_first_name)} {safe_str(item.assignee_last_name)}<br/>"
-            f"<b>Email:</b> {safe_str(item.assignee_email_address)}"
+        assignee = (
+            f"{safe(item.assignee_first_name)} {safe(item.assignee_last_name)}"
+            f"<br/><font size=6>{safe(item.assignee_email_address)}</font>"
         )
         status_date = (
-            f"<b>Status:</b> {safe_str(item.status)}<br/>"
-            f"<b>Condition:</b> {safe_str(item.device_condition)}<br/>"
-            f"<b>Date:</b> {safe_str(item.date.strftime('%Y-%m-%d') if item.date else 'N/A')}<br/>"
-            f"<b>Reason:</b> {safe_str(item.reason_for_update)}"
+            f"<b>Status:</b> {safe(item.status)}<br/>"
+            f"<b>Date:</b> {safe(item.date.strftime('%Y-%m-%d') if item.date else '')}"
         )
-        table_data.append([
-            Paragraph(device_details, cell_style),
-            Paragraph(centre_info, cell_style),
-            Paragraph(assignee_info, cell_style),
-            Paragraph(status_date, cell_style)
-        ])
+
+        row = [
+            Paragraph(safe(item.centre.name if item.centre else ''), cell_style),
+            Paragraph(safe(item.department.name if item.department else ''), cell_style),
+            Paragraph(safe(item.hardware), cell_style),
+            Paragraph(safe(item.system_model), cell_style),
+            Paragraph(specs, cell_style),
+            Paragraph(assignee, cell_style),
+            Paragraph(safe(item.device_condition), cell_style),
+            Paragraph(status_date, cell_style),
+            Paragraph(safe(item.disposal_reason), cell_style),
+        ]
+        table_data.append(row)
 
     if len(table_data) == 1:
-        table_data.append([Paragraph('No records found.', cell_style)] * 4)
+        table_data.append([Paragraph('No records found.', cell_style)] * len(headers))
 
-    table = Table(table_data, colWidths=col_widths, rowHeights=None)
+    table = Table(table_data, colWidths=col_widths)
     table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('FONTSIZE', (0, 0), (-1, 0), 8),
-        ('FONTSIZE', (0, 1), (-1, -1), 7),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
-        ('TOPPADING', (0, 1), (-1, -1), 4),
-        ('BOTTOMPADDING', (0, 1), (-1, -1), 4),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#143C50')),
+        ('TEXTCOLOR',  (0,0), (-1,0), colors.whitesmoke),
+        ('ALIGN',      (0,0), (-1,-1), 'LEFT'),
+        ('FONTSIZE',   (0,0), (-1,0), 8),
+        ('FONTSIZE',   (0,1), (-1,-1), 7.5),
+        ('VALIGN',     (0,0), (-1,-1), 'TOP'),
+        ('GRID',       (0,0), (-1,-1), 0.5, colors.grey),
+        ('LEFTPADDING', (0,0), (-1,-1), 4),
+        ('RIGHTPADDING',(0,0), (-1,-1), 4),
+        ('TOPPADDING',  (0,1), (-1,-1), 3),
+        ('BOTTOMPADDING',(0,1), (-1,-1), 3),
     ]))
     elements.append(table)
 
+    # --- WATERMARK + PAGE NUMBERS (Same as ppm_report) ---
+    def add_page_elements(canvas, doc):
+        # Page number
+        canvas.saveState()
+        canvas.setFont("Helvetica", 9)
+        canvas.setFillColor(colors.grey)
+        page_text = f"Page {doc.page}"
+        canvas.drawCentredString(148.5 * mm, 6 * mm, page_text)
+        canvas.restoreState()
+
+        # Watermark
+        canvas.saveState()
+        canvas.setFont("Helvetica", 60)
+        canvas.setFillGray(0.9, 0.15)  # Light but visible
+        canvas.rotate(45)
+        canvas.drawCentredString(400, 100, "MOHI IT")
+        canvas.restoreState()
+
+    # --- Build PDF ---
     try:
-        doc.build(elements)
+        doc.build(
+            elements,
+            onFirstPage=add_page_elements,
+            onLaterPages=add_page_elements
+        )
     except Exception as e:
-        logger.error(f"PDF generation failed: {str(e)}")
-        return HttpResponse(f"Error generating PDF: {str(e)}", status=500)
+        logger.error(f"PDF generation failed: {e}")
+        return HttpResponse(f"Error generating PDF: {e}", status=500)
+
     return response
+
 
 @login_required
 def profile(request):
@@ -1094,23 +1198,46 @@ def change_password(request):
             return redirect('change_password')
     return render(request, 'accounts/change_password.html', {})
 
-
+from django.db.models import Q, Count # Ensure Count is imported
+# ... other imports like render, redirect, Paginator, etc.
+from .models import Import, PendingUpdate, Centre, Department # (and other models)
 
 @login_required
 def display_approved_imports(request):
-   
     if request.user.is_superuser:
         data = Import.objects.filter(is_approved=True, is_disposed=False)
     elif request.user.is_trainer:
-        data = Import.objects.filter(centre=request.user.centre, is_approved=True, is_disposed=False) if request.user.centre else Import.objects.none()
-        
+        data = (Import.objects.filter(centre=request.user.centre,
+                                       is_approved=True, is_disposed=False)
+                if request.user.centre else Import.objects.none())
     else:
         data = Import.objects.none()
-       
 
-    search_query = request.GET.get('search', '').strip()
+    # ---------- FILTERS ----------
+    centre_filter     = request.GET.get('centre', '').strip()
+    department_filter = request.GET.get('department', '').strip()
+    search_query      = request.GET.get('search', '').strip()
+    show_duplicates   = request.GET.get('show_duplicates', '').strip() # New filter
+
+    if centre_filter:
+        data = data.filter(centre__id=centre_filter)
+    if department_filter:
+        data = data.filter(department__id=department_filter)
+
+    # --- New Duplicate Filter Logic ---
+    if show_duplicates == 'on':
+        # Find serial numbers that are duplicates *within the current filtered set*
+        duplicate_serials = (
+            data.values('serial_number')
+                .annotate(serial_count=Count('serial_number'))
+                .filter(serial_count__gt=1)
+                .values_list('serial_number', flat=True)
+        )
+        # Filter the main queryset to only these serials
+        data = data.filter(serial_number__in=duplicate_serials)
+
     if search_query:
-        query = (
+        data = data.filter(
             Q(centre__name__icontains=search_query) |
             Q(centre__centre_code__icontains=search_query) |
             Q(department__name__icontains=search_query) |
@@ -1127,8 +1254,9 @@ def display_approved_imports(request):
             Q(status__icontains=search_query) |
             Q(reason_for_update__icontains=search_query)
         )
-        data = data.filter(query)
 
+    # ---------- pagination ----------
+    # (Pagination logic remains the same)
     items_per_page = request.GET.get('items_per_page', '10')
     try:
         items_per_page = int(items_per_page)
@@ -1140,47 +1268,94 @@ def display_approved_imports(request):
     paginator = Paginator(data, items_per_page)
     page_number = request.GET.get('page', 1)
     try:
-        data_on_page = paginator.page(page_number)
+        page_obj = paginator.page(page_number)
     except PageNotAnInteger:
-        data_on_page = paginator.page(1)
+        page_obj = paginator.page(1)
     except EmptyPage:
-        data_on_page = paginator.page(paginator.num_pages)
+        page_obj = paginator.page(paginator.num_pages)
 
+
+    # ---------- pending updates ----------
+    # (This logic remains the same)
     data_with_pending = []
-    for item in data_on_page:
-        pending_update = PendingUpdate.objects.filter(import_record=item).order_by('-created_at').first()
-        data_with_pending.append({'item': item, 'pending_update': pending_update})
+    for item in page_obj:
+        pending = PendingUpdate.objects.filter(import_record=item) \
+                                       .order_by('-created_at').first()
+        data_with_pending.append({'item': item, 'pending_update': pending})
 
-    total_devices = Import.objects.count() if request.user.is_superuser else (Import.objects.filter(centre=request.user.centre).count() if request.user.is_trainer and request.user.centre else 0)
-    unapproved_count = Import.objects.filter(is_approved=False, is_disposed=False).count() if request.user.is_superuser else (Import.objects.filter(centre=request.user.centre, is_approved=False, is_disposed=False).count() if request.user.is_trainer and request.user.centre else 0)
+    # ---------- stats ----------
+    # (This logic remains the same)
+    total_devices = (Import.objects.count() if request.user.is_superuser else
+                   (Import.objects.filter(centre=request.user.centre).count()
+                    if request.user.is_trainer and request.user.centre else 0))
+    unapproved_count = (Import.objects.filter(is_approved=False, is_disposed=False).count()
+                        if request.user.is_superuser else
+                        (Import.objects.filter(centre=request.user.centre,
+                                               is_approved=False, is_disposed=False).count()
+                         if request.user.is_trainer and request.user.centre else 0))
     approved_imports = total_devices - unapproved_count
 
-    return render(request, 'import/displaycsv_approved.html', {
+
+    # ---------- context ----------
+    context = {
         'data_with_pending': data_with_pending,
         'paginator': paginator,
-        'data': data_on_page,
-        'report_data': {'total_records': paginator.count, 'search_query': search_query, 'items_per_page': items_per_page},
+        'data': page_obj,
+        'report_data': {
+            'total_records': paginator.count,
+            'search_query': search_query,
+            'items_per_page': items_per_page,
+        },
         'centres': Centre.objects.all(),
         'departments': Department.objects.all(),
+        'centre_filter': centre_filter,
+        'department_filter': department_filter,
+        'show_duplicates': show_duplicates, # Pass new filter to context
         'items_per_page_options': [10, 25, 50, 100, 500],
         'unapproved_count': unapproved_count,
         'total_devices': total_devices,
         'approved_imports': approved_imports,
-        'view_name': 'display_approved_imports'
-    })
+        'view_name': 'display_approved_imports',
+    }
+    return render(request, 'import/displaycsv_approved.html', context)
 
+
+# ----------------------------------------------------------------------
+#  UNAPPROVED IMPORTS (Applying the same changes)
+# ----------------------------------------------------------------------
 @login_required
 def display_unapproved_imports(request):
     if request.user.is_superuser:
         data = Import.objects.filter(is_approved=False, is_disposed=False)
     elif request.user.is_trainer:
-        data = Import.objects.filter(centre=request.user.centre, is_approved=False, is_disposed=False) if request.user.centre else Import.objects.none()
+        data = (Import.objects.filter(centre=request.user.centre,
+                                       is_approved=False, is_disposed=False)
+                if request.user.centre else Import.objects.none())
     else:
         data = Import.objects.none()
 
-    search_query = request.GET.get('search', '').strip()
+    centre_filter     = request.GET.get('centre', '').strip()
+    department_filter = request.GET.get('department', '').strip()
+    search_query      = request.GET.get('search', '').strip()
+    show_duplicates   = request.GET.get('show_duplicates', '').strip() # New filter
+
+    if centre_filter:
+        data = data.filter(centre__id=centre_filter)
+    if department_filter:
+        data = data.filter(department__id=department_filter)
+
+    # --- New Duplicate Filter Logic ---
+    if show_duplicates == 'on':
+        duplicate_serials = (
+            data.values('serial_number')
+                .annotate(serial_count=Count('serial_number'))
+                .filter(serial_count__gt=1)
+                .values_list('serial_number', flat=True)
+        )
+        data = data.filter(serial_number__in=duplicate_serials)
+
     if search_query:
-        query = (
+        data = data.filter(
             Q(centre__name__icontains=search_query) |
             Q(centre__centre_code__icontains=search_query) |
             Q(department__name__icontains=search_query) |
@@ -1197,8 +1372,8 @@ def display_unapproved_imports(request):
             Q(status__icontains=search_query) |
             Q(reason_for_update__icontains=search_query)
         )
-        data = data.filter(query)
 
+    # (Pagination logic remains the same)
     items_per_page = request.GET.get('items_per_page', '10')
     try:
         items_per_page = int(items_per_page)
@@ -1210,47 +1385,84 @@ def display_unapproved_imports(request):
     paginator = Paginator(data, items_per_page)
     page_number = request.GET.get('page', 1)
     try:
-        data_on_page = paginator.page(page_number)
+        page_obj = paginator.page(page_number)
     except PageNotAnInteger:
-        data_on_page = paginator.page(1)
+        page_obj = paginator.page(1)
     except EmptyPage:
-        data_on_page = paginator.page(paginator.num_pages)
+        page_obj = paginator.page(paginator.num_pages)
 
+    # (Pending updates logic remains the same)
     data_with_pending = []
-    unapproved_count = data.count()
-    for item in data_on_page:
-        pending_update = PendingUpdate.objects.filter(import_record=item).order_by('-created_at').first()
-        data_with_pending.append({'item': item, 'pending_update': pending_update})
+    for item in page_obj:
+        pending = PendingUpdate.objects.filter(import_record=item) \
+                                       .order_by('-created_at').first()
+        data_with_pending.append({'item': item, 'pending_update': pending})
 
-    total_devices = Import.objects.count() if request.user.is_superuser else (Import.objects.filter(centre=request.user.centre).count() if request.user.is_trainer and request.user.centre else 0)
+    # (Stats logic remains the same)
+    total_devices = (Import.objects.count() if request.user.is_superuser else
+                   (Import.objects.filter(centre=request.user.centre).count()
+                    if request.user.is_trainer and request.user.centre else 0))
+    unapproved_count = data.count()
     approved_imports = total_devices - unapproved_count
 
-    return render(request, 'import/displaycsv_unapproved.html', {
+    context = {
         'data_with_pending': data_with_pending,
         'paginator': paginator,
-        'data': data_on_page,
-        'report_data': {'total_records': paginator.count, 'search_query': search_query, 'items_per_page': items_per_page},
+        'data': page_obj,
+        'report_data': {
+            'total_records': paginator.count,
+            'search_query': search_query,
+            'items_per_page': items_per_page,
+        },
         'centres': Centre.objects.all(),
         'departments': Department.objects.all(),
+        'centre_filter': centre_filter,
+        'department_filter': department_filter,
+        'show_duplicates': show_duplicates, # Pass new filter to context
         'items_per_page_options': [10, 25, 50, 100, 500],
         'unapproved_count': unapproved_count,
         'total_devices': total_devices,
         'approved_imports': approved_imports,
-        'view_name': 'display_unapproved_imports'
-    })
+        'view_name': 'display_unapproved_imports',
+    }
+    return render(request, 'import/displaycsv_unapproved.html', context)
 
+
+# ----------------------------------------------------------------------
+#  DISPOSED IMPORTS (Applying the same changes)
+# ----------------------------------------------------------------------
 @login_required
 def display_disposed_imports(request):
     if request.user.is_superuser:
         data = Import.objects.filter(is_disposed=True)
     elif request.user.is_trainer:
-        data = Import.objects.filter(centre=request.user.centre, is_disposed=True) if request.user.centre else Import.objects.none()
+        data = (Import.objects.filter(centre=request.user.centre, is_disposed=True)
+                if request.user.centre else Import.objects.none())
     else:
         data = Import.objects.none()
 
-    search_query = request.GET.get('search', '').strip()
+    centre_filter     = request.GET.get('centre', '').strip()
+    department_filter = request.GET.get('department', '').strip()
+    search_query      = request.GET.get('search', '').strip()
+    show_duplicates   = request.GET.get('show_duplicates', '').strip() # New filter
+
+    if centre_filter:
+        data = data.filter(centre__id=centre_filter)
+    if department_filter:
+        data = data.filter(department__id=department_filter)
+
+    # --- New Duplicate Filter Logic ---
+    if show_duplicates == 'on':
+        duplicate_serials = (
+            data.values('serial_number')
+                .annotate(serial_count=Count('serial_number'))
+                .filter(serial_count__gt=1)
+                .values_list('serial_number', flat=True)
+        )
+        data = data.filter(serial_number__in=duplicate_serials)
+
     if search_query:
-        query = (
+        data = data.filter(
             Q(centre__name__icontains=search_query) |
             Q(centre__centre_code__icontains=search_query) |
             Q(department__name__icontains=search_query) |
@@ -1265,10 +1477,10 @@ def display_disposed_imports(request):
             Q(assignee_email_address__icontains=search_query) |
             Q(device_condition__icontains=search_query) |
             Q(status__icontains=search_query) |
-            Q(disposal_reason__icontains=search_query)
+            Q(disposal_reason__icontains=search_query) # Added disposal_reason
         )
-        data = data.filter(query)
 
+    # (Pagination logic remains the same)
     items_per_page = request.GET.get('items_per_page', '10')
     try:
         items_per_page = int(items_per_page)
@@ -1280,35 +1492,54 @@ def display_disposed_imports(request):
     paginator = Paginator(data, items_per_page)
     page_number = request.GET.get('page', 1)
     try:
-        data_on_page = paginator.page(page_number)
+        page_obj = paginator.page(page_number)
     except PageNotAnInteger:
-        data_on_page = paginator.page(1)
+        page_obj = paginator.page(1)
     except EmptyPage:
-        data_on_page = paginator.page(paginator.num_pages)
+        page_obj = paginator.page(paginator.num_pages)
 
+    # (Pending updates logic remains the same)
     data_with_pending = []
-    for item in data_on_page:
-        pending_update = PendingUpdate.objects.filter(import_record=item).order_by('-created_at').first()
-        data_with_pending.append({'item': item, 'pending_update': pending_update})
+    for item in page_obj:
+        pending = PendingUpdate.objects.filter(import_record=item) \
+                                       .order_by('-created_at').first()
+        data_with_pending.append({'item': item, 'pending_update': pending})
 
-    total_devices = Import.objects.count() if request.user.is_superuser else (Import.objects.filter(centre=request.user.centre).count() if request.user.is_trainer and request.user.centre else 0)
-    unapproved_count = Import.objects.filter(is_approved=False, is_disposed=False).count() if request.user.is_superuser else (Import.objects.filter(centre=request.user.centre, is_approved=False, is_disposed=False).count() if request.user.is_trainer and request.user.centre else 0)
+    # (Stats logic remains the same)
+    total_devices = (Import.objects.count() if request.user.is_superuser else
+                   (Import.objects.filter(centre=request.user.centre).count()
+                    if request.user.is_trainer and request.user.centre else 0))
+    unapproved_count = (Import.objects.filter(is_approved=False, is_disposed=False).count()
+                        if request.user.is_superuser else
+                        (Import.objects.filter(centre=request.user.centre,
+                                               is_approved=False, is_disposed=False).count()
+                         if request.user.is_trainer and request.user.centre else 0))
     approved_imports = total_devices - unapproved_count
 
-    return render(request, 'import/displaycsv_disposed.html', {
+    context = {
         'data_with_pending': data_with_pending,
         'paginator': paginator,
-        'data': data_on_page,
-        'report_data': {'total_records': paginator.count, 'search_query': search_query, 'items_per_page': items_per_page},
+        'data': page_obj,
+        'report_data': {
+            'total_records': paginator.count,
+            'search_query': search_query,
+            'items_per_page': items_per_page,
+        },
         'centres': Centre.objects.all(),
         'departments': Department.objects.all(),
+        'centre_filter': centre_filter,
+        'department_filter': department_filter,
+        'show_duplicates': show_duplicates, # Pass new filter to context
         'items_per_page_options': [10, 25, 50, 100, 500],
         'unapproved_count': unapproved_count,
         'total_devices': total_devices,
         'approved_imports': approved_imports,
-        'view_name': 'display_disposed_imports'
-    })
+        'view_name': 'display_disposed_imports',
+    }
+    return render(request, 'import/displaycsv_disposed.html', context)
 
+
+# (Your dispose_device function remains unchanged)
 @login_required
 def dispose_device(request, device_id):
     device = get_object_or_404(Import, id=device_id)
@@ -1329,7 +1560,9 @@ def dispose_device(request, device_id):
             messages.success(request, f"Device {device.serial_number} disposed successfully.")
             return redirect('display_approved_imports')
     return render(request, 'import/dispose_device.html', {'device': device})
- 
+
+
+    
 @login_required
 def mark_notification_read(request, pk):
     notification = get_object_or_404(Notification, pk=pk, user=request.user)
@@ -1359,6 +1592,9 @@ def dashboard_view(request):
         ppm_query = PPMTask.objects.none()
         user_scope = "none"
     
+    # Get active PPM period
+    active_period = PPMPeriod.objects.filter(is_active=True).first()
+    
     # === DEVICE STATISTICS ===
     total_devices = device_query.count()
     approved_devices = device_query.filter(is_approved=True, is_disposed=False).count()
@@ -1370,18 +1606,42 @@ def dashboard_view(request):
         count=Count('id')
     ).order_by('-count')
     
-    # Devices by centre
-    devices_by_centre = device_query.filter(is_disposed=False).values(
-        'centre__name'
-    ).annotate(count=Count('id')).order_by('-count')[:10]
+    # Devices by centre - all centres
+    all_centres = Centre.objects.all()
+    devices_by_centre = []
+    for centre in all_centres:
+        count = device_query.filter(centre=centre, is_approved=True, is_disposed=False).count()
+        if user_scope == "centre" and centre != user.centre:
+            continue
+        devices_by_centre.append({'centre__name': centre.name, 'count': count})
+    devices_by_centre = sorted(devices_by_centre, key=lambda x: x['count'], reverse=True)
     
-    # Devices by hardware type
-    devices_by_hardware = device_query.filter(is_disposed=False).values(
-        'hardware'
-    ).annotate(count=Count('id')).order_by('-count')[:10]
+    # Devices by hardware type - grouped
+    hardware_counts = device_query.filter(is_approved=True, is_disposed=False).values('hardware').annotate(count=Count('id'))
+    grouped_hardware = {}
+    categories = {
+        'laptop': 'Laptop',
+        'monitor': 'Monitor',
+        'system unit': 'System Unit',
+        'printer': 'Printer',
+        'router': 'Routers/Switch/Server',
+        'switch': 'Routers/Switch/Server',
+        'server': 'Routers/Switch/Server',
+        'endcomputing': 'Endcomputing',
+        'television': 'Television'
+    }
+    for item in hardware_counts:
+        hw = item['hardware'].lower() if item['hardware'] else "unknown"
+        key = "Unknown"
+        for cat, label in categories.items():
+            if cat in hw:
+                key = label
+                break
+        grouped_hardware[key] = grouped_hardware.get(key, 0) + item['count']
+    devices_by_hardware = [{'hardware': k, 'count': v} for k, v in sorted(grouped_hardware.items(), key=lambda x: x[1], reverse=True)]
     
     # Device condition breakdown
-    device_condition_breakdown = device_query.filter(is_disposed=False).values(
+    device_condition_breakdown = device_query.filter(is_approved=True, is_disposed=False).values(
         'device_condition'
     ).annotate(count=Count('id')).order_by('-count')
     
@@ -1391,17 +1651,68 @@ def dashboard_view(request):
     recent_devices = device_query.order_by('-date')[:10]
     
     # === PPM STATISTICS ===
-    total_ppm_tasks = ppm_query.count()
-    completed_ppm_tasks = ppm_query.filter(completed_date__isnull=False).count()
-    incomplete_ppm_tasks = total_ppm_tasks - completed_ppm_tasks
+    active_period = PPMPeriod.objects.filter(is_active=True).first()
+    if active_period:
+        period = active_period
+        is_active_period = True
+    else:
+        period = PPMPeriod.objects.order_by('-end_date').first()
+        is_active_period = False
     
-    # Overdue tasks
+    total_ppm_tasks = 0
+    devices_with_ppm = 0
+    devices_without_ppm = 0
+    ppm_completion_rate = 0
+    ppm_status_labels = []
+    ppm_status_data = []
+    ppm_status_colors = []
+    ppm_tasks_by_activity = []
+    ppm_by_centre = []
+    period_name = None
+    
+    if period:
+        period_name = period.name
+        ppm_query_period = ppm_query.filter(period=period)
+        total_ppm_tasks = ppm_query_period.count()
+        devices_with_ppm = ppm_query_period.values('device').distinct().count()
+        devices_without_ppm = approved_devices - devices_with_ppm
+        ppm_completion_rate = round((devices_with_ppm / approved_devices * 100) if approved_devices > 0 else 0, 1)
+        
+        if is_active_period:
+            ppm_status_labels = ['PPM Done', 'PPM Not Done']
+            ppm_status_data = [devices_with_ppm, devices_without_ppm]
+            ppm_status_colors = ['#10B981', '#F59E0B']
+        else:
+            ppm_status_labels = ['PPM Done', 'PPM Overdue']
+            ppm_status_data = [devices_with_ppm, devices_without_ppm]
+            ppm_status_colors = ['#10B981', '#EF4444']
+        
+        # Tasks by activity for this period
+        ppm_tasks_by_activity = ppm_query_period.values(
+            'activities__name'
+        ).annotate(count=Count('id')).order_by('-count')
+        
+        # PPM by centre - all centres, device-based
+        ppm_by_centre = []
+        for centre in all_centres:
+            if user_scope == "centre" and centre != user.centre:
+                continue
+            centre_approved = device_query.filter(centre=centre, is_approved=True, is_disposed=False).count()
+            centre_with_ppm = ppm_query_period.filter(device__centre=centre).values('device').distinct().count()
+            ppm_by_centre.append({
+                'device__centre__name': centre.name,
+                'total': centre_approved,
+                'completed': centre_with_ppm
+            })
+        ppm_by_centre = sorted(ppm_by_centre, key=lambda x: x['completed'], reverse=True)
+    
+    # Overdue tasks - task based, across all
     overdue_ppm_tasks = ppm_query.filter(
         period__end_date__lt=timezone.now().date(),
         completed_date__isnull=True
     ).count()
     
-    # Tasks due soon (next 7 days)
+    # Tasks due soon (next 7 days) - task based
     seven_days_ahead = timezone.now().date() + timedelta(days=7)
     tasks_due_soon = ppm_query.filter(
         period__end_date__lte=seven_days_ahead,
@@ -1409,15 +1720,7 @@ def dashboard_view(request):
         completed_date__isnull=True
     ).count()
     
-    # PPM completion rate
-    ppm_completion_rate = round((completed_ppm_tasks / total_ppm_tasks * 100), 1) if total_ppm_tasks > 0 else 0
-    
-    # Tasks by activity
-    ppm_tasks_by_activity = ppm_query.values(
-        'activities__name'
-    ).annotate(count=Count('id')).order_by('-count')[:10]
-    
-    # Tasks by period
+    # Tasks by period - all
     ppm_tasks_by_period = ppm_query.values(
         'period__name'
     ).annotate(
@@ -1425,7 +1728,7 @@ def dashboard_view(request):
         completed=Count(Case(When(completed_date__isnull=False, then=1), output_field=IntegerField()))
     ).order_by('-total')[:5]
     
-    # Average completion time (in days)
+    # Average completion time (in days) - all
     completed_tasks_with_time = ppm_query.filter(
         completed_date__isnull=False,
         period__start_date__isnull=False
@@ -1438,15 +1741,7 @@ def dashboard_view(request):
         total_days = sum([task.days_to_complete.days for task in completed_tasks_with_time])
         avg_completion_time = round(total_days / completed_tasks_with_time.count(), 1)
     
-    # PPM tasks by centre
-    ppm_by_centre = ppm_query.values(
-        'device__centre__name'
-    ).annotate(
-        total=Count('id'),
-        completed=Count(Case(When(completed_date__isnull=False, then=1), output_field=IntegerField()))
-    ).order_by('-total')[:10]
-    
-    # Recent PPM completions
+    # Recent PPM completions - all
     recent_ppm_completions = ppm_query.filter(
         completed_date__isnull=False
     ).order_by('-completed_date')[:5]
@@ -1471,7 +1766,6 @@ def dashboard_view(request):
     # === MONTHLY TRENDS (Last 6 months) ===
     six_months_ago = timezone.now().date() - timedelta(days=180)
     
-    # Devices added per month
     devices_monthly = []
     ppm_completed_monthly = []
     
@@ -1517,8 +1811,8 @@ def dashboard_view(request):
         
         # PPM stats
         'total_ppm_tasks': total_ppm_tasks,
-        'completed_ppm_tasks': completed_ppm_tasks,
-        'incomplete_ppm_tasks': incomplete_ppm_tasks,
+        'devices_with_ppm': devices_with_ppm,
+        'devices_without_ppm': devices_without_ppm,
         'overdue_ppm_tasks': overdue_ppm_tasks,
         'tasks_due_soon': tasks_due_soon,
         'ppm_completion_rate': ppm_completion_rate,
@@ -1527,6 +1821,11 @@ def dashboard_view(request):
         'avg_completion_time': avg_completion_time,
         'ppm_by_centre': ppm_by_centre,
         'recent_ppm_completions': recent_ppm_completions,
+        'ppm_status_labels': ppm_status_labels,
+        'ppm_status_data': ppm_status_data,
+        'ppm_status_colors': ppm_status_colors,
+        'period_name': period_name,
+        'is_active_period': is_active_period,
         
         # User & system stats
         'total_users': total_users,
@@ -1699,20 +1998,28 @@ def user_update(request, pk):
                 messages.success(request, "User updated successfully.")
             return redirect('manage_users')
     return redirect('manage_users')
+def _can_delete_user(user):
+    """Only IT Manager or Senior IT Officer can delete users."""
+    return user.is_it_manager or user.is_senior_it_officer
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(_can_delete_user, login_url='manage_users')
 def user_delete(request, pk):
-    user = get_object_or_404(CustomUser, pk=pk)
+    user_to_delete = get_object_or_404(CustomUser, pk=pk)
+
     if request.method == 'POST':
-        if user == request.user:
+        if user_to_delete == request.user:
             messages.error(request, "You cannot delete your own account.")
             return redirect('manage_users')
+
         with transaction.atomic():
-            user.delete()
-            messages.success(request, "User deleted successfully.")
+            username = user_to_delete.username
+            user_to_delete.delete()
+            messages.success(request, f"User '{username}' deleted successfully.")
         return redirect('manage_users')
+
     return redirect('manage_users')
+
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
@@ -1791,12 +2098,7 @@ def clear_user(request, device_id):
     else:
         form = ClearanceForm()
     return render(request, 'import/clear_user.html', {'form': form, 'device': device})
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4, mm
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-import random
-from django.utils import timezone
+
 
 @login_required
 def download_clearance_form(request, device_id):
@@ -1946,3 +2248,122 @@ def download_clearance_form(request, device_id):
     doc.build(elements, onFirstPage=add_watermark, onLaterPages=add_watermark)
 
     return response
+
+
+@login_required
+def filtered_devices_view(request):
+    user = request.user
+    
+    # Base query based on user role
+    if user.is_superuser and not user.is_trainer:
+        device_query = Import.objects.all()
+    elif user.is_trainer and user.centre:
+        device_query = Import.objects.filter(centre=user.centre)
+    else:
+        device_query = Import.objects.none()
+    
+    # Get filter parameters
+    filter_type = request.GET.get('type', '')  # hardware, centre, status, condition
+    filter_value = request.GET.get('value', '')
+    search_query = request.GET.get('search', '').strip()
+    items_per_page = request.GET.get('items_per_page', '25')
+    page_number = request.GET.get('page', '1')
+    
+    # Apply filters
+    if filter_type == 'hardware' and filter_value:
+        # Handle grouped hardware categories
+        hardware_map = {
+            'Laptop': ['laptop'],
+            'Monitor': ['monitor'],
+            'System Unit': ['system unit'],
+            'Printer': ['printer'],
+            'Routers/Switch/Server': ['router', 'switch', 'server'],
+            'Endcomputing': ['endcomputing'],
+            'Television': ['television']
+        }
+        
+        if filter_value in hardware_map:
+            query = Q()
+            for term in hardware_map[filter_value]:
+                query |= Q(hardware__icontains=term)
+            device_query = device_query.filter(query)
+        else:
+            device_query = device_query.filter(hardware__icontains=filter_value)
+    
+    elif filter_type == 'centre' and filter_value:
+        device_query = device_query.filter(centre__name=filter_value)
+    
+    elif filter_type == 'status' and filter_value:
+        device_query = device_query.filter(status=filter_value)
+    
+    elif filter_type == 'condition' and filter_value:
+        device_query = device_query.filter(device_condition=filter_value)
+    
+    elif filter_type == 'ppm_status':
+        # Get active period
+        active_period = PPMPeriod.objects.filter(is_active=True).first()
+        if not active_period:
+            active_period = PPMPeriod.objects.order_by('-end_date').first()
+        
+        if active_period:
+            devices_with_ppm = PPMTask.objects.filter(
+                period=active_period
+            ).values_list('device_id', flat=True).distinct()
+            
+            if filter_value == 'completed':
+                device_query = device_query.filter(id__in=devices_with_ppm)
+            elif filter_value == 'pending':
+                device_query = device_query.filter(is_approved=True, is_disposed=False).exclude(id__in=devices_with_ppm)
+    
+    # Default filter to approved and non-disposed
+    device_query = device_query.filter(is_approved=True, is_disposed=False)
+    
+    # Apply search
+    if search_query:
+        query = (
+            Q(serial_number__icontains=search_query) |
+            Q(hardware__icontains=search_query) |
+            Q(assignee_first_name__icontains=search_query) |
+            Q(assignee_last_name__icontains=search_query) |
+            Q(centre__name__icontains=search_query) |
+            Q(department__name__icontains=search_query)
+        )
+        device_query = device_query.filter(query)
+    
+    # Validate items_per_page
+    try:
+        items_per_page = int(items_per_page)
+        if items_per_page not in [10, 25, 50, 100, 500]:
+            items_per_page = 25
+    except ValueError:
+        items_per_page = 25
+    
+    # Order by date
+    device_query = device_query.select_related('centre', 'department').order_by('-date', 'id')
+    
+    # Pagination
+    paginator = Paginator(device_query, items_per_page)
+    try:
+        page_number = int(page_number) if page_number else 1
+        devices = paginator.page(page_number)
+    except:
+        devices = paginator.page(1)
+    
+    # Get filter display name
+    filter_display = filter_value if filter_value else "All Devices"
+    if filter_type == 'ppm_status':
+        filter_display = f"PPM {filter_value.title()}"
+    
+    context = {
+        'devices': devices,
+        'filter_type': filter_type,
+        'filter_value': filter_value,
+        'filter_display': filter_display,
+        'search_query': search_query,
+        'items_per_page': items_per_page,
+        'items_per_page_options': [10, 25, 50, 100, 500],
+        'paginator': paginator,
+        'total_devices': paginator.count,
+    }
+    
+    return render(request, 'import/zfiltered_devices.html', context)
