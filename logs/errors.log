@@ -1,0 +1,1685 @@
+ERROR 2025-11-18 14:18:28,294 log 2812271 139650089486144 Internal Server Error: /displayreport/approved/
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/base.py", line 244, in _get_session
+    return self._session_cache
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 279, in ensure_connection
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 256, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 365, in __init__
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 681, in connect
+    self._request_authentication()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 972, in _request_authentication
+    auth_packet = self._process_auth(plugin_name, auth_packet)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 1063, in _process_auth
+    pkt = self._read_packet()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 782, in _read_packet
+    packet.raise_for_error()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1040, 'Too many connections')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 56, in _view_wrapper
+    test_pass = test_func(request.user)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 79, in <lambda>
+    lambda u: u.is_authenticated,
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/functional.py", line 251, in inner
+    self._setup()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/functional.py", line 404, in _setup
+    self._wrapped = self._setupfunc()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/middleware.py", line 40, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/middleware.py", line 20, in get_user
+    request._cached_user = auth.get_user(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/__init__.py", line 304, in get_user
+    user_id = _get_user_session_key(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/__init__.py", line 95, in _get_user_session_key
+    return get_user_model()._meta.pk.to_python(request.session[SESSION_KEY])
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/base.py", line 55, in __getitem__
+    return self._session[key]
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/base.py", line 249, in _get_session
+    self._session_cache = self.load()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/db.py", line 55, in load
+    s = self._get_session_from_db()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/db.py", line 34, in _get_session_from_db
+    return self.model.objects.get(
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 629, in get
+    num = len(clone)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1621, in execute_sql
+    cursor = self.connection.cursor()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 320, in cursor
+    return self._cursor()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 296, in _cursor
+    self.ensure_connection()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 278, in ensure_connection
+    with self.wrap_database_errors:
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 279, in ensure_connection
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 256, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 365, in __init__
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 681, in connect
+    self._request_authentication()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 972, in _request_authentication
+    auth_packet = self._process_auth(plugin_name, auth_packet)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 1063, in _process_auth
+    pkt = self._read_packet()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 782, in _read_packet
+    packet.raise_for_error()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+django.db.utils.OperationalError: (1040, 'Too many connections')
+ERROR 2025-11-18 14:30:56,622 log 2812271 139650089486144 Internal Server Error: /import/update/1829/
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/base.py", line 244, in _get_session
+    return self._session_cache
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 279, in ensure_connection
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 256, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 365, in __init__
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 681, in connect
+    self._request_authentication()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 972, in _request_authentication
+    auth_packet = self._process_auth(plugin_name, auth_packet)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 1063, in _process_auth
+    pkt = self._read_packet()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 782, in _read_packet
+    packet.raise_for_error()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1040, 'Too many connections')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 56, in _view_wrapper
+    test_pass = test_func(request.user)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 79, in <lambda>
+    lambda u: u.is_authenticated,
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/functional.py", line 251, in inner
+    self._setup()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/functional.py", line 404, in _setup
+    self._wrapped = self._setupfunc()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/middleware.py", line 40, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/middleware.py", line 20, in get_user
+    request._cached_user = auth.get_user(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/__init__.py", line 304, in get_user
+    user_id = _get_user_session_key(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/__init__.py", line 95, in _get_user_session_key
+    return get_user_model()._meta.pk.to_python(request.session[SESSION_KEY])
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/base.py", line 55, in __getitem__
+    return self._session[key]
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/base.py", line 249, in _get_session
+    self._session_cache = self.load()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/db.py", line 55, in load
+    s = self._get_session_from_db()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/db.py", line 34, in _get_session_from_db
+    return self.model.objects.get(
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 629, in get
+    num = len(clone)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1621, in execute_sql
+    cursor = self.connection.cursor()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 320, in cursor
+    return self._cursor()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 296, in _cursor
+    self.ensure_connection()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 278, in ensure_connection
+    with self.wrap_database_errors:
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 279, in ensure_connection
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 256, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 365, in __init__
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 681, in connect
+    self._request_authentication()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 972, in _request_authentication
+    auth_packet = self._process_auth(plugin_name, auth_packet)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 1063, in _process_auth
+    pkt = self._read_packet()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 782, in _read_packet
+    packet.raise_for_error()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+django.db.utils.OperationalError: (1040, 'Too many connections')
+ERROR 2025-11-25 06:40:08,495 log 2837695 139700596926272 Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/middleware/security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+ERROR 2025-11-25 06:40:10,759 log 2838110 140500166182720 Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+ERROR 2025-11-25 09:37:27,832 log 4058743 140163629664064 Internal Server Error: /user/update/8/
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/fields/__init__.py", line 2128, in get_prep_value
+    return int(value)
+ValueError: invalid literal for int() with base 10: ''
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ufdxwals/inventoryhub/devices/views/general_views.py", line 1931, in user_update
+    user.groups.set(groups)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/fields/related_descriptors.py", line 1347, in set
+    else self.target_field.get_prep_value(obj)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/fields/related.py", line 1196, in get_prep_value
+    return self.target_field.get_prep_value(value)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/fields/__init__.py", line 2130, in get_prep_value
+    raise e.__class__(
+ValueError: Field 'id' expected a number but got ''.
+ERROR 2025-11-25 09:37:37,428 log 4058743 140163629664064 Internal Server Error: /user/update/8/
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/fields/__init__.py", line 2128, in get_prep_value
+    return int(value)
+ValueError: invalid literal for int() with base 10: ''
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/ufdxwals/inventoryhub/devices/views/general_views.py", line 1931, in user_update
+    user.groups.set(groups)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/fields/related_descriptors.py", line 1347, in set
+    else self.target_field.get_prep_value(obj)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/fields/related.py", line 1196, in get_prep_value
+    return self.target_field.get_prep_value(value)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/fields/__init__.py", line 2130, in get_prep_value
+    raise e.__class__(
+ValueError: Field 'id' expected a number but got ''.
+ERROR 2025-11-28 14:03:55,528 log 113586 140594114246464 Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+ERROR 2025-11-28 14:03:56,318 log 114886 140594114246464 Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+ERROR 2025-11-28 14:03:57,036 log 113586 140594114246464 Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+ERROR 2025-12-01 14:24:22,533 log 1664987 139632020956992 Internal Server Error: /displayreport/approved/
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/base.py", line 244, in _get_session
+    return self._session_cache
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 279, in ensure_connection
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 256, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 365, in __init__
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 680, in connect
+    self._get_server_information()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 1099, in _get_server_information
+    packet = self._read_packet()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 782, in _read_packet
+    packet.raise_for_error()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1040, 'Too many connections')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/inventoryhub/devices/middleware.py", line 34, in __call__
+    if request.user.is_authenticated:
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/functional.py", line 251, in inner
+    self._setup()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/functional.py", line 404, in _setup
+    self._wrapped = self._setupfunc()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/middleware.py", line 40, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/middleware.py", line 20, in get_user
+    request._cached_user = auth.get_user(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/__init__.py", line 304, in get_user
+    user_id = _get_user_session_key(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/__init__.py", line 95, in _get_user_session_key
+    return get_user_model()._meta.pk.to_python(request.session[SESSION_KEY])
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/base.py", line 55, in __getitem__
+    return self._session[key]
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/base.py", line 249, in _get_session
+    self._session_cache = self.load()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/db.py", line 55, in load
+    s = self._get_session_from_db()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/db.py", line 34, in _get_session_from_db
+    return self.model.objects.get(
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 629, in get
+    num = len(clone)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1621, in execute_sql
+    cursor = self.connection.cursor()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 320, in cursor
+    return self._cursor()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 296, in _cursor
+    self.ensure_connection()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 278, in ensure_connection
+    with self.wrap_database_errors:
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 279, in ensure_connection
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 256, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 365, in __init__
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 680, in connect
+    self._get_server_information()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 1099, in _get_server_information
+    packet = self._read_packet()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 782, in _read_packet
+    packet.raise_for_error()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+django.db.utils.OperationalError: (1040, 'Too many connections')
+ERROR 2025-12-01 14:24:22,547 log 1664987 139632020956992 Internal Server Error: /displayreport/approved/
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/base.py", line 244, in _get_session
+    return self._session_cache
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 279, in ensure_connection
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 256, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 365, in __init__
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 680, in connect
+    self._get_server_information()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 1099, in _get_server_information
+    packet = self._read_packet()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 782, in _read_packet
+    packet.raise_for_error()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1040, 'Too many connections')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/deprecation.py", line 122, in __call__
+    response = self.process_response(request, response)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/middleware.py", line 48, in process_response
+    if request.session.get_expire_at_browser_close():
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/base.py", line 403, in get_expire_at_browser_close
+    if (expiry := self.get("_session_expiry")) is None:
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/base.py", line 74, in get
+    return self._session.get(key, default)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/base.py", line 249, in _get_session
+    self._session_cache = self.load()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/db.py", line 55, in load
+    s = self._get_session_from_db()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/db.py", line 34, in _get_session_from_db
+    return self.model.objects.get(
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 629, in get
+    num = len(clone)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1621, in execute_sql
+    cursor = self.connection.cursor()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 320, in cursor
+    return self._cursor()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 296, in _cursor
+    self.ensure_connection()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 278, in ensure_connection
+    with self.wrap_database_errors:
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 279, in ensure_connection
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 256, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 365, in __init__
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 680, in connect
+    self._get_server_information()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 1099, in _get_server_information
+    packet = self._read_packet()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 782, in _read_packet
+    packet.raise_for_error()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+django.db.utils.OperationalError: (1040, 'Too many connections')
+ERROR 2025-12-01 14:24:32,419 log 2008686 139632020956992 Internal Server Error: /displayreport/approved/
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/base.py", line 244, in _get_session
+    return self._session_cache
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 279, in ensure_connection
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 256, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 365, in __init__
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 681, in connect
+    self._request_authentication()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 972, in _request_authentication
+    auth_packet = self._process_auth(plugin_name, auth_packet)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 1063, in _process_auth
+    pkt = self._read_packet()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 782, in _read_packet
+    packet.raise_for_error()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1040, 'Too many connections')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/inventoryhub/devices/middleware.py", line 34, in __call__
+    if request.user.is_authenticated:
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/functional.py", line 251, in inner
+    self._setup()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/functional.py", line 404, in _setup
+    self._wrapped = self._setupfunc()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/middleware.py", line 40, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/middleware.py", line 20, in get_user
+    request._cached_user = auth.get_user(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/__init__.py", line 304, in get_user
+    user_id = _get_user_session_key(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/auth/__init__.py", line 95, in _get_user_session_key
+    return get_user_model()._meta.pk.to_python(request.session[SESSION_KEY])
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/base.py", line 55, in __getitem__
+    return self._session[key]
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/base.py", line 249, in _get_session
+    self._session_cache = self.load()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/db.py", line 55, in load
+    s = self._get_session_from_db()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/contrib/sessions/backends/db.py", line 34, in _get_session_from_db
+    return self.model.objects.get(
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 629, in get
+    num = len(clone)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1621, in execute_sql
+    cursor = self.connection.cursor()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 320, in cursor
+    return self._cursor()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 296, in _cursor
+    self.ensure_connection()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 278, in ensure_connection
+    with self.wrap_database_errors:
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 279, in ensure_connection
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/base/base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/db/backends/mysql/base.py", line 256, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 365, in __init__
+    self.connect()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 681, in connect
+    self._request_authentication()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 972, in _request_authentication
+    auth_packet = self._process_auth(plugin_name, auth_packet)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 1063, in _process_auth
+    pkt = self._read_packet()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/connections.py", line 782, in _read_packet
+    packet.raise_for_error()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/pymysql/err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+django.db.utils.OperationalError: (1040, 'Too many connections')
+ERROR 2025-12-04 13:23:14,048 log 1323152 140450480559936 Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+ERROR 2025-12-04 13:23:15,193 log 1323243 140450480559936 Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+ERROR 2025-12-04 13:23:15,681 log 1323152 140450480559936 Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+ERROR 2025-12-09 12:32:06,463 log 1998620 140310132118016 Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/middleware/security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+ERROR 2025-12-09 12:32:08,091 log 1998788 139835026555392 Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+ERROR 2025-12-13 14:23:53,004 log 3334921 140674877620736 Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+ERROR 2025-12-13 16:34:41,422 log 273108 140499481903616 Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ufdxwals/virtualenv/inventoryhub/3.10/lib/python3.10/site-packages/django/http/request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'mail.mohiit.org'. You may need to add 'mail.mohiit.org' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:39:02,082 log 10776 19464 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:39:31,314 log 10776 18900 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:40:54,665 log 10776 15884 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:41:01,380 log 10776 7540 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:41:31,347 log 10776 4516 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:42:01,339 log 10776 14988 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:42:31,337 log 10776 19900 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:43:01,380 log 10776 20304 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:43:31,351 log 10776 4464 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:44:01,338 log 10776 13196 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:44:31,335 log 10776 15228 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:45:01,385 log 10776 17324 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:45:31,332 log 10776 19284 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:46:51,372 log 10776 17860 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:47:51,384 log 10776 19040 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:48:51,419 log 10776 10560 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:49:51,408 log 10776 5972 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:50:51,377 log 10776 17928 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:51:51,377 log 10776 6948 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:52:51,385 log 10776 11604 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:53:51,376 log 10776 10420 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:54:51,373 log 10776 20324 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:55:51,374 log 10776 12300 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:56:51,374 log 10776 19996 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:57:51,363 log 10776 20384 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:58:51,411 log 10776 4116 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 12:59:51,384 log 10776 19152 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:00:51,354 log 10776 20460 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:01:51,387 log 10776 3308 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:02:51,388 log 10776 20192 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:03:51,367 log 10776 9416 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:04:51,400 log 10776 2948 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:05:51,363 log 10776 7100 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:06:51,390 log 10776 17568 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:07:51,371 log 10776 12480 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:08:51,383 log 10776 19852 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:09:51,367 log 10776 18336 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:10:51,400 log 10776 20260 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:11:51,464 log 10776 10560 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:12:51,395 log 10776 20276 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:13:51,361 log 10776 8544 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:14:08,905 log 10776 16444 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:14:31,332 log 10776 13324 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:15:01,360 log 10776 1580 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:15:31,353 log 10776 17692 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:16:01,346 log 10776 18064 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:16:31,341 log 10776 10444 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:17:01,353 log 10776 20316 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:17:31,345 log 10776 19792 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:18:01,338 log 10776 16300 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:18:31,344 log 10776 6196 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:19:01,342 log 10776 8360 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:19:51,343 log 10776 18552 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:20:51,373 log 10776 8984 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:21:51,371 log 10776 12104 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:22:51,400 log 10776 20244 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:23:25,386 log 10776 18892 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:23:30,554 log 10776 19360 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:23:32,788 log 10776 18912 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:23:35,155 log 10776 3000 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\middleware\security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+ERROR 2025-12-16 13:25:43,314 basehttp 16176 1564 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:25:43,314 basehttp 16176 18744 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:25:54,183 basehttp 16176 19956 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:25:54,183 basehttp 16176 19856 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:25:54,183 basehttp 16176 18232 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:25:54,183 basehttp 16176 18456 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:26:03,726 basehttp 16176 8508 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:26:03,726 basehttp 16176 20340 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:59:24,666 basehttp 19036 17064 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:59:24,666 basehttp 19036 5132 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:59:24,666 basehttp 19036 17688 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:59:24,666 basehttp 19036 14936 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:59:26,453 basehttp 19036 12988 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:59:26,456 basehttp 19036 16044 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:59:26,461 basehttp 19036 16324 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:59:26,462 basehttp 19036 11208 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:59:26,463 basehttp 19036 7072 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:59:26,464 basehttp 19036 20076 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:59:28,580 basehttp 19036 20272 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:59:28,582 basehttp 19036 19164 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:59:28,583 basehttp 19036 7680 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 13:59:28,583 basehttp 19036 2820 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 14:00:04,070 log 19036 19180 Internal Server Error: /dashboard/
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\defaulttags.py", line 1035, in find_library
+    return parser.libraries[name]
+KeyError: 'custom_filters'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\noel.langat\Desktop\devs\inventoryhub\devices\views\general_views.py", line 2449, in dashboard_view
+    return render(request, 'index.html', context)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\defaulttags.py", line 1097, in load
+    lib = find_library(parser, name)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\defaulttags.py", line 1037, in find_library
+    raise TemplateSyntaxError(
+django.template.exceptions.TemplateSyntaxError: 'custom_filters' is not a registered tag library. Must be one of:
+admin_list
+admin_modify
+admin_urls
+cache
+getattributes
+i18n
+it_operations_filters
+l10n
+log
+simple_history_compat
+static
+tz
+workplan_extras
+ERROR 2025-12-16 14:00:04,070 basehttp 19036 19180 "GET /dashboard/ HTTP/1.1" 500 288195
+ERROR 2025-12-16 14:30:46,395 basehttp 5620 16252 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 14:30:46,395 basehttp 5620 18752 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 14:30:46,397 basehttp 5620 1236 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 14:30:46,402 basehttp 5620 15628 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 14:30:48,955 basehttp 5620 19872 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 14:30:48,957 basehttp 5620 16432 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 14:30:48,959 basehttp 5620 13168 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 14:30:48,959 basehttp 5620 7932 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-16 14:32:37,624 log 5620 19060 Internal Server Error: /dashboard/
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\defaulttags.py", line 1035, in find_library
+    return parser.libraries[name]
+KeyError: 'custom_filters'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\noel.langat\Desktop\devs\inventoryhub\devices\views\general_views.py", line 2449, in dashboard_view
+    return render(request, 'index.html', context)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\defaulttags.py", line 1097, in load
+    lib = find_library(parser, name)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\defaulttags.py", line 1037, in find_library
+    raise TemplateSyntaxError(
+django.template.exceptions.TemplateSyntaxError: 'custom_filters' is not a registered tag library. Must be one of:
+admin_list
+admin_modify
+admin_urls
+cache
+getattributes
+i18n
+it_operations_filters
+l10n
+log
+simple_history_compat
+static
+tz
+workplan_extras
+ERROR 2025-12-16 14:32:37,629 basehttp 5620 19060 "GET /dashboard/ HTTP/1.1" 500 288195
+ERROR 2025-12-16 14:33:43,295 log 5620 19060 Internal Server Error: /dashboard/
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\defaulttags.py", line 1035, in find_library
+    return parser.libraries[name]
+KeyError: 'custom_filters'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\noel.langat\Desktop\devs\inventoryhub\devices\views\general_views.py", line 2449, in dashboard_view
+    return render(request, 'index.html', context)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\defaulttags.py", line 1097, in load
+    lib = find_library(parser, name)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\defaulttags.py", line 1037, in find_library
+    raise TemplateSyntaxError(
+django.template.exceptions.TemplateSyntaxError: 'custom_filters' is not a registered tag library. Must be one of:
+admin_list
+admin_modify
+admin_urls
+cache
+getattributes
+i18n
+it_operations_filters
+l10n
+log
+simple_history_compat
+static
+tz
+workplan_extras
+ERROR 2025-12-16 14:33:43,297 basehttp 5620 19060 "GET /dashboard/ HTTP/1.1" 500 288195
+ERROR 2025-12-16 14:33:46,330 log 5620 19060 Internal Server Error: /dashboard/
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\defaulttags.py", line 1035, in find_library
+    return parser.libraries[name]
+KeyError: 'custom_filters'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\noel.langat\Desktop\devs\inventoryhub\devices\views\general_views.py", line 2449, in dashboard_view
+    return render(request, 'index.html', context)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\defaulttags.py", line 1097, in load
+    lib = find_library(parser, name)
+  File "C:\Users\noel.langat\.virtualenvs\inventoryhub-s0HNsVPU\lib\site-packages\django\template\defaulttags.py", line 1037, in find_library
+    raise TemplateSyntaxError(
+django.template.exceptions.TemplateSyntaxError: 'custom_filters' is not a registered tag library. Must be one of:
+admin_list
+admin_modify
+admin_urls
+cache
+getattributes
+i18n
+it_operations_filters
+l10n
+log
+simple_history_compat
+static
+tz
+workplan_extras
+ERROR 2025-12-16 14:33:46,332 basehttp 5620 19060 "GET /dashboard/ HTTP/1.1" 500 288195

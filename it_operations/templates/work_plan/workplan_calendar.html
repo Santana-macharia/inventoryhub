@@ -1,0 +1,274 @@
+{% extends 'dashboard.html' %}
+{% block title %}Calendar - MOHI IT{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4 lg:p-6 animate-fade-in">
+    
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-6">
+        <div class="flex flex-col lg:flex-row justify-between items-center gap-4">
+            
+            <div class="flex items-center gap-6">
+                <a href="{% url 'work_plan_list' %}?user_filter={{ target_user.id }}" class="text-gray-400 hover:text-primary transition" title="Back to Dashboard">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z"></path></svg>
+                </a>
+                <div>
+                    <h1 class="text-3xl font-extrabold text-primary uppercase tracking-wide">
+                        {{ month_name }} <span class="text-gray-400 font-light">{{ year }}</span>
+                    </h1>
+                    {% if target_user != request.user %}
+                    <div class="inline-flex items-center mt-1 px-2 py-0.5 rounded bg-blue-50 text-blue-700 text-xs font-bold">
+                        Viewing: {{ target_user.get_full_name }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-3 items-center justify-center">
+                <div class="flex items-center bg-gray-100 rounded-lg p-1">
+                    <a href="?year={{ prev_year }}&month={{ prev_month }}&user_filter={{ target_user.id }}" class="px-3 py-1.5 hover:bg-white hover:shadow rounded text-gray-600 font-bold text-sm transition">Prev</a>
+                    <span class="px-2 text-gray-300">|</span>
+                    <a href="?year={{ next_year }}&month={{ next_month }}&user_filter={{ target_user.id }}" class="px-3 py-1.5 hover:bg-white hover:shadow rounded text-gray-600 font-bold text-sm transition">Next</a>
+                </div>
+
+                <div class="relative">
+                    <button onclick="toggleReportMenu()" class="flex items-center px-4 py-2 bg-green-600 text-white text-sm font-bold rounded-lg hover:bg-green-700 shadow transition">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        Download Report
+                    </button>
+                    <div id="reportMenu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl z-50 border border-gray-100 overflow-hidden">
+                        <div class="bg-gray-50 px-4 py-2 text-[10px] font-bold text-gray-500 uppercase tracking-wider">Excel / CSV</div>
+                        
+                        <a href="{% url 'download_bulk_excel_report' %}?report_type=weekly&user_filter={{ target_user.id }}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-accent transition">
+                            Current Week
+                        </a>
+                        <a href="{% url 'download_bulk_excel_report' %}?report_type=monthly&year={{ year }}&month={{ month }}&user_filter={{ target_user.id }}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-accent transition">
+                            Selected Month ({{ month_name }})
+                        </a>
+                        <a href="{% url 'download_bulk_excel_report' %}?report_type=annual&year={{ year }}&user_filter={{ target_user.id }}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-accent transition">
+                            Selected Year ({{ year }})
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-6 pt-4 border-t border-gray-100 flex flex-wrap gap-2 justify-center lg:justify-start">
+            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider mr-2 self-center">Filter:</span>
+            <button onclick="filterCalendar('all')" class="filter-btn active px-3 py-1 rounded-full text-xs font-bold bg-gray-800 text-white transition shadow">All</button>
+            <button onclick="filterCalendar('active')" class="filter-btn px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 hover:bg-blue-200 transition">Active</button>
+            <button onclick="filterCalendar('collab')" class="filter-btn px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800 hover:bg-purple-200 transition">Collab</button>
+            <button onclick="filterCalendar('completed')" class="filter-btn px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 hover:bg-green-200 transition">Completed</button>
+            <button onclick="filterCalendar('not_done')" class="filter-btn px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800 hover:bg-red-200 transition">Not Done</button>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-200 select-none">
+        <div class="grid grid-cols-7 border-b border-gray-200 bg-primary text-white">
+            <div class="py-3 text-center text-xs font-bold uppercase tracking-widest">Mon</div>
+            <div class="py-3 text-center text-xs font-bold uppercase tracking-widest">Tue</div>
+            <div class="py-3 text-center text-xs font-bold uppercase tracking-widest">Wed</div>
+            <div class="py-3 text-center text-xs font-bold uppercase tracking-widest">Thu</div>
+            <div class="py-3 text-center text-xs font-bold uppercase tracking-widest">Fri</div>
+            <div class="py-3 text-center text-xs font-bold uppercase tracking-widest">Sat</div>
+            <div class="py-3 text-center text-xs font-bold uppercase tracking-widest bg-gray-800">Sun</div>
+        </div>
+
+        <div class="bg-gray-200 gap-px border-b border-gray-200">
+            {% for week in calendar_grid %}
+            <div class="grid grid-cols-7 gap-px">
+                {% for day in week %}
+                <div class="min-h-[140px] p-2 relative flex flex-col group transition duration-200 {{ day.css_class }} hover:bg-white">
+                    
+                    <div class="flex justify-between items-start mb-1">
+                        <span class="text-sm font-bold w-7 h-7 flex items-center justify-center rounded-full
+                            {% if day.is_today %}bg-accent text-white shadow-lg ring-2 ring-blue-200
+                            {% elif day.is_holiday %}text-red-500 bg-red-50
+                            {% else %}text-gray-500{% endif %}">
+                            {{ day.day_num }}
+                        </span>
+                        {% if day.is_holiday %}
+                        <span class="text-[8px] uppercase font-black text-red-400 tracking-tight">Holiday</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="space-y-1 flex-grow overflow-y-auto max-h-[90px] custom-scrollbar">
+                        {% for event in day.events %}
+                        <div onclick="openViewModal('{{ event.id }}')" 
+                             class="event-item task-{{ event.status_code }} block text-[10px] px-2 py-1 rounded border-l-2 truncate cursor-pointer hover:opacity-80 transition shadow-sm {{ event.color }} font-semibold"
+                             title="{{ event.title }}">
+                            {{ event.title }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if day.can_add_task %}
+                    <button onclick="openAddTaskModal('{{ day.date|date:'Y-m-d' }}')" 
+                            class="absolute bottom-2 right-2 w-6 h-6 flex items-center justify-center bg-gray-100 hover:bg-accent hover:text-white text-gray-400 rounded-full shadow-sm transition transform hover:scale-110 opacity-0 group-hover:opacity-100"
+                            title="Add Task">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    </button>
+                    {% endif %}
+
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div id="viewTaskModal" class="fixed inset-0 bg-black bg-opacity-60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-scale-in transform transition-all">
+        <div class="bg-primary p-4 flex justify-between items-center">
+            <h3 class="text-lg font-bold text-white">Task Details</h3>
+            <button onclick="closeViewModal()" class="text-white hover:text-gray-300"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+        </div>
+        
+        <div class="p-6 relative">
+            <div id="viewLoader" class="absolute inset-0 bg-white flex items-center justify-center z-10">
+                <svg class="animate-spin h-8 w-8 text-accent" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase">Task</p>
+                    <p id="view_task_name" class="text-lg font-bold text-gray-800"></p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase">Status</p>
+                        <span id="view_status" class="inline-block px-2 py-1 text-xs font-bold rounded bg-gray-100 text-gray-800 mt-1"></span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase">Date</p>
+                        <p id="view_date" class="text-sm font-medium text-gray-700 mt-1"></p>
+                    </div>
+                </div>
+                <div>
+                     <p class="text-xs font-bold text-gray-400 uppercase">Target/Outcome</p>
+                     <p id="view_target" class="text-sm text-gray-600 bg-gray-50 p-2 rounded mt-1"></p>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-gray-100 flex justify-end">
+                <a id="view_full_details_link" href="#" class="w-full text-center px-4 py-3 bg-accent text-white rounded-xl font-bold hover:bg-blue-600 shadow-lg transition transform hover:-translate-y-0.5">
+                    Go to Details Page to Edit
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="addTaskModal" class="fixed inset-0 bg-black bg-opacity-60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden animate-scale-in flex flex-col max-h-[90vh]">
+        <div class="flex justify-between items-center p-4 border-b bg-gray-50">
+            <h3 class="text-xl font-bold text-primary">Add New Task</h3>
+            <button onclick="closeAddTaskModal()" class="text-gray-400 hover:text-red-500 transition"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+        </div>
+
+        <div class="p-6 overflow-y-auto grow">
+            <form method="post" action="{% url 'work_plan_create_task_from_calendar' %}">
+                {% csrf_token %}
+                <input type="hidden" name="date" id="addTaskDate">
+                
+                <div class="p-3 bg-yellow-50 border border-yellow-100 rounded-lg flex items-center gap-3 mb-5">
+                    <input type="checkbox" name="is_leave" id="add_is_leave" onchange="toggleAddLeave()" class="w-5 h-5 text-accent rounded cursor-pointer">
+                    <label class="text-sm font-bold text-yellow-800 cursor-pointer" for="add_is_leave">Mark as "On Leave"</label>
+                </div>
+                <div id="add_fields_container" class="grid grid-cols-1 md:grid-cols-2 gap-5 transition-all duration-300">
+                    <div class="md:col-span-2">
+                        <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Task Name <span class="text-red-500">*</span></label>
+                        <input type="text" name="task_name" required class="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-accent outline-none">
+                    </div>
+                    <div class="mt-6 md:col-span-2">
+                        <button type="submit" class="w-full py-3 bg-accent text-white rounded-xl font-bold text-lg shadow-lg hover:bg-blue-600">Add Task</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. Filter Logic
+    function filterCalendar(type) {
+        // Reset buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('bg-gray-800', 'text-white'); 
+            if(!btn.classList.contains('bg-gray-800')) {
+                // Restore original color classes roughly (simplified reset)
+                btn.style.opacity = '0.6'; 
+            }
+        });
+        
+        // Highlight active button
+        event.target.style.opacity = '1';
+        event.target.classList.add('ring-2', 'ring-offset-1', 'ring-gray-400');
+
+        const items = document.querySelectorAll('.event-item');
+        items.forEach(item => {
+            if (type === 'all') {
+                item.style.display = 'block';
+            } else {
+                if (item.classList.contains(`task-${type}`)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            }
+        });
+    }
+
+    // 2. Report Menu
+    function toggleReportMenu() {
+        document.getElementById('reportMenu').classList.toggle('hidden');
+    }
+
+    // 3. View Modal Logic
+    function openViewModal(taskId) {
+        document.getElementById('viewTaskModal').classList.remove('hidden');
+        document.getElementById('viewLoader').classList.remove('hidden');
+        
+        // Use placeholder '0' to be replaced
+        const url = "{% url 'get_task_details_json' 0 %}".replace('0', taskId);
+
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('view_task_name').innerText = data.task_name;
+                document.getElementById('view_status').innerText = data.status;
+                document.getElementById('view_date').innerText = data.date;
+                document.getElementById('view_target').innerText = data.target || 'N/A';
+                
+                // Link to details page
+                const detailUrl = "{% url 'work_plan_detail' 0 %}".replace('0', data.work_plan_id);
+                document.getElementById('view_full_details_link').href = detailUrl;
+                
+                document.getElementById('viewLoader').classList.add('hidden');
+            })
+            .catch(err => {
+                alert("Error loading task details");
+                closeViewModal();
+            });
+    }
+
+    function closeViewModal() {
+        document.getElementById('viewTaskModal').classList.add('hidden');
+    }
+    
+    // 4. Add Modal Logic
+    function openAddTaskModal(dateStr) {
+        document.getElementById('addTaskDate').value = dateStr;
+        document.getElementById('addTaskModal').classList.remove('hidden');
+    }
+    function closeAddTaskModal() {
+        document.getElementById('addTaskModal').classList.add('hidden');
+    }
+    function toggleAddLeave() {
+        const isChecked = document.getElementById('add_is_leave').checked;
+        const container = document.getElementById('add_fields_container');
+        if(isChecked) container.classList.add('opacity-50', 'pointer-events-none');
+        else container.classList.remove('opacity-50', 'pointer-events-none');
+    }
+</script>
+{% endblock %}

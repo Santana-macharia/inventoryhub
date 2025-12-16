@@ -16,9 +16,6 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# ... rest of your settings ...
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -32,7 +29,12 @@ SECRET_KEY = 'django-insecure-=7ap+(zql*g##=bjqpdk9sgtd76k%ayih&k&qz(2y(t0^!7u^x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Allow all hosts during development
+
+if DEBUG:
+    ALLOWED_HOSTS = []
+else:
+    ALLOWED_HOSTS = ['mohiit.org', 'www.mohiit.org', 'pld109.truehost.cloud']
 
 
 # Application definition
@@ -44,15 +46,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ictinventory',
+    
     'devices',
     'ppm',
+    'it_operations',
     'simple_history',
     
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -60,6 +64,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
+    # ⭐ ADD THIS - Custom middleware for session timeout
+    'devices.middleware.SessionTimeoutMiddleware',
 ]
 
 ROOT_URLCONF = 'itinventory.urls'
@@ -83,13 +89,14 @@ TEMPLATES = [
 ]
 
 
-
-
 WSGI_APPLICATION = 'itinventory.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+
+import pymysql
+pymysql.install_as_MySQLdb()
 
 if DEBUG:
     DATABASES = {
@@ -99,13 +106,20 @@ if DEBUG:
         }
 }
 else:
-      DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db_live.sqlite3',
-        }
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ufdxwals_it_functions_db',
+        'USER': 'ufdxwals_mohiit',
+        'PASSWORD': 'Norex@999!', 
+        'HOST': 'localhost',  
+        'PORT': '3306',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES';",
+        },
+    }
 }
-
 
 
 # Password validation
@@ -143,10 +157,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static/'),
-# ]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -157,6 +168,147 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 
-
 AUTH_USER_MODEL = 'devices.CustomUser'
-LOGIN_URL = '/admin/login/'
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'login'
+
+
+# ============================================================================
+# ⭐ SESSION SECURITY CONFIGURATION (20 MINUTES AUTO-LOGOUT)
+# ============================================================================
+
+# Session expires after 20 minutes of inactivity
+SESSION_COOKIE_AGE = 300  # 20 minutes in seconds (20 * 60)
+
+# Session expires when browser is closed
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Save session on every request (updates last activity time)
+SESSION_SAVE_EVERY_REQUEST = True
+
+# Use database-backed sessions (more secure and allows cleanup)
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+# Session cookie settings for security
+# ⭐ UPDATED: Only True if not in DEBUG mode
+SESSION_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access to session cookie
+SESSION_COOKIE_SAMESITE = 'Lax'  # CSRF protection
+SESSION_COOKIE_NAME = 'mohi_sessionid'  # Custom session cookie name
+
+# ============================================================================
+# ⭐ CACHE CONFIGURATION (DISABLE CACHING FOR FRESH CONTENT)
+# ============================================================================
+
+# Disable browser caching - forces users to get fresh content after deployment
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
+
+# Cache middleware seconds (0 = no caching)
+CACHE_MIDDLEWARE_SECONDS = 0
+
+# ============================================================================
+# ⭐ BROWSER CACHE CONTROL HEADERS
+# ============================================================================
+
+# Prevent browser from caching pages
+# These headers will be added by the middleware
+CACHE_CONTROL_MAX_AGE = 0
+CACHE_CONTROL_NO_CACHE = True
+CACHE_CONTROL_NO_STORE = True
+CACHE_CONTROL_MUST_REVALIDATE = True
+
+# ============================================================================
+# EXISTING SECURITY SETTINGS
+# ============================================================================
+
+# ⭐ UPDATED: Only require secure cookies/redirects if not in DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+# SESSION_COOKIE_SECURE = not DEBUG # (Already set above)
+SECURE_SSL_REDIRECT = not DEBUG
+
+# ============================================================================
+# ⭐ ADDITIONAL SECURITY HEADERS
+# ============================================================================
+
+# Prevent caching of sensitive pages
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Additional security settings
+X_FRAME_OPTIONS = 'DENY'
+
+# ⭐ UPDATED: Only enable HSTS in production (not DEBUG)
+if not DEBUG:
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+else:
+    SECURE_HSTS_SECONDS = 0
+
+# ============================================================================
+# Email CONFIGURATION
+# ============================================================================
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'mohiit.org'          # Outgoing server (SMTP)
+EMAIL_PORT = 465                   # SSL SMTP port
+EMAIL_USE_SSL = True               # Required for port 465
+# EMAIL_USE_TLS = False            # Do NOT use TLS with port 465
+
+EMAIL_HOST_USER = 'nonreply@mohiit.org'
+EMAIL_HOST_PASSWORD = 'Norex@999!'
+
+DEFAULT_FROM_EMAIL = 'nonreply@mohiit.org'
+
+# ============================================================================
+# LOGGING CONFIGURATION
+# ============================================================================
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,  
+    
+    # Define the format of the log message
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {asctime} {message}',
+            'style': '{',
+        },
+    },
+    
+    # Define where the logs will go (e.g., a file)
+    'handlers': {
+        'error_file': {
+            'level': 'ERROR',  # Log only ERROR and CRITICAL messages
+            'class': 'logging.FileHandler',
+            # This is the crucial part:
+            'filename': os.path.join(BASE_DIR, 'logs/errors.log'),
+            'formatter': 'verbose', # Use the 'verbose' formatter defined above
+        },
+        'debug_file': {
+            'level': 'DEBUG', # Log EVERYTHING from DEBUG level up
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs/debug.log'),
+            'formatter': 'simple',
+        },
+    },
+    
+    # Define which loggers to use
+    'loggers': {
+        'django': {
+            'handlers': ['error_file'], # Send 'django' logger messages to 'error_file'
+            'level': 'ERROR',          # Only process ERROR messages
+            'propagate': True,
+        },
+       
+    },
+}
